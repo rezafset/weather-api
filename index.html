@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Temperature Hot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="/favicon/weather.ico" type="image/x-icon">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url(images/bg-image.jpg) no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form class="col-md-6 m-auto py-5">
+            <div class="input-group mb-3">
+                <input id="city" type="text" class="form-control" placeholder="Enter a City for Weather ...">
+                <div class="input-group-append">
+                    <button id="search" type="button" class="btn btn-danger">Search</button>
+                </div>
+            </div>
+        </form>
+        <div class="weather-status text-white text-center">
+            <img id="weather-icon" src="" alt="">
+            <h1 id="weather-location">Weather App </h1>
+            <h4 id="current-date"></h4>
+            <h3 id="weather-temp"></h3>
+            <h1 id="weather-description"></h1>
+            <!-- <h3 id="weather-humidity"></h3>
+            <h3 id="weather-pressure"></h3>
+            <h3 id="weather-wind"></h3>
+            <h3 id="country"></h3> -->
+        </div>
+    </div>
+
+    <script>
+        const appKey = {
+            key : "aced9513149cfa892ba8bfba23c67eaa"
+        }
+        const icon = document.getElementById("weather-icon");
+        const cityName = document.getElementById("weather-location");
+        const currentDate = document.getElementById("current-date");
+        const temperature = document.getElementById("weather-temp");
+        const description = document.getElementById("weather-description");
+
+        document.getElementById("search").addEventListener("click", () =>{
+            const city = document.getElementById("city").value;
+            getApi(city);
+            document.getElementById("city").value = " ";
+        })
+        function getApi(city){
+            fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${appKey.key}`)
+            .then(response => {
+                return response.json();
+            }).then(showWeather);
+        }
+        
+        function showWeather(weather){
+            // console.log(weather);
+            icon.src = `http://openweathermap.org/img/w/${weather.weather[0].icon}.png`;
+            cityName.innerText = weather.name;
+            let date = new Date;
+            currentDate.innerText = showDate(date);
+            temperature.innerText = Math.floor(weather.main.temp -273.15 ) + " °C";
+            description.innerText = weather.weather[0].main;
+        }
+        function showDate (get) {
+            let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+            let day = days[get.getDay()];
+            let date = get.getDate();
+            let month = months[get.getMonth()];
+            let year = get.getFullYear();
+
+            return `${day} ${date} ${month} ${year}`;
+        }
+        
+    </script>
+
+</body>
+
+</html>
+
